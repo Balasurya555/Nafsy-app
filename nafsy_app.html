@@ -1,0 +1,3338 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نفسي — Nafsy</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --sage: #7C9E8A;
+  --sage-light: #EAF2ED;
+  --sage-dark: #4A7060;
+  --sand: #E8DDD0;
+  --sand-light: #F7F3EE;
+  --sand-dark: #C4B5A0;
+  --ink: #1C2B26;
+  --ink-soft: #4A6057;
+  --ink-muted: #8A9E98;
+  --rose: #C4847A;
+  --rose-light: #F5E8E6;
+  --amber: #C9A96E;
+  --amber-light: #F7F0E3;
+  --white: #FDFCFA;
+  --danger: #C4847A;
+  --r: 20px;
+  --r-sm: 12px;
+}
+
+body {
+  font-family: 'Noto Naskh Arabic', serif;
+  background: #D4CBB8;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* PHONE FRAME */
+.phone {
+  width: 390px;
+  height: 844px;
+  background: var(--sand-light);
+  border-radius: 50px;
+  box-shadow: 0 0 0 10px #1a1a1a, 0 0 0 12px #333, 0 40px 80px rgba(0,0,0,0.5);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.notch {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 34px;
+  background: #1a1a1a;
+  border-radius: 0 0 20px 20px;
+  z-index: 100;
+}
+
+.status-bar {
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+/* SCREENS */
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.screen.active { display: flex; }
+
+/* SCROLL AREA */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 12px 16px 28px;
+  background: var(--white);
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.nav-item:active { background: var(--sage-light); }
+.nav-item.active .nav-icon { color: var(--sage-dark); }
+.nav-item.active .nav-label { color: var(--sage-dark); font-weight: 500; }
+.nav-icon { font-size: 22px; color: var(--ink-muted); }
+.nav-label { font-size: 10px; color: var(--ink-muted); font-family: 'DM Sans', sans-serif; }
+
+/* ===================== ONBOARDING SCREEN ===================== */
+#screen-onboard {
+  background: var(--ink);
+}
+
+.onboard-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.onboard-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.onboard-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 60px 32px 48px;
+  justify-content: space-between;
+}
+
+.onboard-logo {
+  text-align: center;
+}
+
+.logo-arabic {
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  display: block;
+}
+
+.logo-latin {
+  font-family: 'DM Serif Display', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+  display: block;
+}
+
+.onboard-middle {
+  text-align: center;
+}
+
+.onboard-headline {
+  font-size: 22px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.onboard-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+}
+
+.onboard-bottom {}
+
+.steps-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.25);
+  transition: all 0.3s;
+}
+.dot.active {
+  width: 20px;
+  background: var(--sage);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  background: var(--sage);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.btn-primary:active { transform: scale(0.98); background: var(--sage-dark); }
+
+.btn-secondary {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* ===================== HOME SCREEN ===================== */
+#screen-home {
+  background: var(--sand-light);
+}
+
+.home-header {
+  padding: 8px 24px 16px;
+  background: var(--sand-light);
+}
+
+.greeting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.greeting-text {
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.user-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.avatar-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: white; font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Burnout card */
+.burnout-card {
+  margin: 0 24px 16px;
+  background: var(--ink);
+  border-radius: 24px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.burnout-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: var(--sage);
+  opacity: 0.2;
+}
+
+.burnout-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 4px;
+}
+
+.burnout-score-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.burnout-score {
+  font-size: 52px;
+  font-weight: 700;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1;
+}
+
+.burnout-score-max {
+  font-size: 20px;
+  color: rgba(255,255,255,0.4);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 8px;
+}
+
+.burnout-status {
+  display: inline-block;
+  background: rgba(124,158,138,0.25);
+  color: #9FE1CB;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.burnout-bar-wrap {
+  background: rgba(255,255,255,0.1);
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 12px;
+}
+.burnout-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--sage);
+  width: 34%;
+  transition: width 1s ease;
+}
+
+/* Quick actions */
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  padding: 0 24px;
+  margin-bottom: 12px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  padding: 0 24px;
+  margin-bottom: 20px;
+}
+
+.quick-btn {
+  flex: 1;
+  background: var(--white);
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 18px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-btn:active { transform: scale(0.97); background: var(--sage-light); }
+
+.quick-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+.quick-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+
+/* Today's mood strip */
+.mood-strip {
+  padding: 0 24px;
+  margin-bottom: 20px;
+}
+
+.mood-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mood-day {
+  flex: 1;
+  text-align: center;
+}
+
+.mood-day-label {
+  font-size: 10px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.mood-dot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin: 0 auto;
+}
+
+/* Insight card */
+.insight-card {
+  margin: 0 24px 20px;
+  background: var(--sage-light);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.insight-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.insight-content {}
+.insight-badge {
+  font-size: 10px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--sage-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+.insight-text {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.6;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ===================== JOURNAL SCREEN ===================== */
+#screen-journal { background: var(--sand-light); }
+
+.screen-header {
+  padding: 8px 24px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 0.5px solid rgba(0,0,0,0.08);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.screen-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  flex: 1;
+  text-align: center;
+}
+
+.screen-title-spacer { width: 36px; }
+
+/* Date strip */
+.date-strip {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.date-strip::-webkit-scrollbar { display: none; }
+
+.date-chip {
+  flex-shrink: 0;
+  text-align: center;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--white);
+  border: 0.5px solid rgba(0,0,0,0.08);
+  transition: all 0.2s;
+}
+.date-chip.active {
+  background: var(--sage);
+}
+.date-chip .day-name {
+  font-size: 10px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink-muted);
+  display: block;
+}
+.date-chip.active .day-name { color: rgba(255,255,255,0.7); }
+.date-chip .day-num {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  display: block;
+}
+.date-chip.active .day-num { color: white; }
+
+/* Mood picker */
+.mood-picker-card {
+  margin: 0 24px 16px;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 18px;
+  border: 0.5px solid rgba(0,0,0,0.06);
+}
+
+.mood-picker-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.mood-emojis {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mood-emoji-btn {
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: var(--sand-light);
+  border: 2px solid transparent;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mood-emoji-btn:active { transform: scale(0.9); }
+.mood-emoji-btn.selected {
+  border-color: var(--sage);
+  background: var(--sage-light);
+}
+
+/* Journal input */
+.journal-input-card {
+  margin: 0 24px 16px;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 18px;
+  border: 0.5px solid rgba(0,0,0,0.06);
+}
+
+.journal-input-label {
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.journal-textarea {
+  width: 100%;
+  min-height: 120px;
+  border: none;
+  outline: none;
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  resize: none;
+  line-height: 1.8;
+  direction: rtl;
+}
+
+.journal-textarea::placeholder { color: var(--ink-muted); }
+
+.journal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 0.5px solid rgba(0,0,0,0.06);
+}
+
+.char-count {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.voice-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--rose-light);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.voice-btn.recording {
+  background: var(--rose);
+  animation: pulse-rec 1s infinite;
+}
+
+@keyframes pulse-rec {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* AI analysis result */
+.ai-result-card {
+  margin: 0 24px 16px;
+  border-radius: 20px;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--sage-light) 0%, var(--amber-light) 100%);
+  border: 0.5px solid rgba(124,158,138,0.3);
+}
+
+.ai-result-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ai-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--sage);
+  color: white;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.ai-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #9FE1CB;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.ai-result-text {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.7;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.emotion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.emotion-tag {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+.emotion-tag.fatigue { background: var(--amber-light); color: #8A6020; }
+.emotion-tag.stress { background: var(--rose-light); color: #8A3A30; }
+.emotion-tag.hope { background: var(--sage-light); color: var(--sage-dark); }
+
+/* Save button */
+.save-btn-wrap { padding: 0 24px 16px; }
+.btn-save {
+  width: 100%;
+  padding: 16px;
+  background: var(--sage-dark);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-save:active { transform: scale(0.98); }
+
+/* ===================== EXERCISES SCREEN ===================== */
+#screen-exercises { background: var(--sand-light); }
+
+.exercise-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 24px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.exercise-tabs::-webkit-scrollbar { display: none; }
+
+.ex-tab {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--white);
+  border: 0.5px solid rgba(0,0,0,0.08);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ex-tab.active {
+  background: var(--sage);
+  color: white;
+  border-color: transparent;
+}
+
+.exercise-card {
+  margin: 0 24px 14px;
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 0.5px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.exercise-card:active { transform: scale(0.99); }
+
+.exercise-card-header {
+  padding: 16px 18px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.exercise-icon-wrap {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.icon-teal { background: var(--sage-light); }
+.icon-amber { background: var(--amber-light); }
+.icon-rose { background: var(--rose-light); }
+
+.exercise-info { flex: 1; }
+.exercise-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 3px;
+  display: block;
+}
+.exercise-desc {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.5;
+}
+
+.exercise-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 18px 14px;
+}
+
+.meta-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink-muted);
+  background: var(--sand-light);
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+/* ===================== EXERCISE PLAYER ===================== */
+#screen-player { background: var(--ink); }
+
+.player-header {
+  padding: 8px 24px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn-light {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.player-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  flex: 1;
+  text-align: center;
+}
+
+/* Breathing animation */
+.breath-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.breath-circle-outer {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(124,158,138,0.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 4s ease-in-out;
+  position: relative;
+}
+
+.breath-circle-outer.expand {
+  transform: scale(1.4);
+  background: rgba(124,158,138,0.25);
+}
+
+.breath-circle-inner {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.breath-phase {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.breath-count {
+  font-size: 32px;
+  font-weight: 300;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1;
+}
+
+.breath-instruction {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.breath-instruction-text {
+  font-size: 18px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+}
+
+.breath-step-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.player-controls {
+  padding: 20px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-breath-start {
+  width: 100%;
+  padding: 16px;
+  background: var(--sage);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-breath-start:active { transform: scale(0.98); }
+
+.btn-breath-stop {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border: none;
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* ===================== CIRCLES SCREEN ===================== */
+#screen-circles { background: var(--sand-light); }
+
+.circle-card {
+  margin: 0 24px 14px;
+  background: var(--white);
+  border-radius: 20px;
+  padding: 18px;
+  border: 0.5px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.circle-card:active { transform: scale(0.99); }
+
+.circle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.circle-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.circle-badge {
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.badge-active { background: var(--sage-light); color: var(--sage-dark); }
+.badge-new { background: var(--amber-light); color: #7A5A20; }
+
+.circle-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.circle-members {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-avatars {
+  display: flex;
+}
+.member-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  margin-right: -8px;
+}
+
+.member-count {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  margin-right: 8px;
+}
+
+.last-msg {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  margin-right: auto;
+}
+
+/* ===================== CRISIS SCREEN ===================== */
+#screen-crisis { background: var(--sand-light); }
+
+.crisis-banner {
+  margin: 0 24px 16px;
+  background: var(--rose-light);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid rgba(196,132,122,0.3);
+}
+
+.crisis-banner-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--rose);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crisis-banner-text {
+  font-size: 14px;
+  color: var(--ink-soft);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.7;
+}
+
+.crisis-call-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 24px 12px;
+  padding: 16px 20px;
+  background: var(--white);
+  border-radius: 18px;
+  border: 0.5px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.crisis-call-btn:active { background: var(--sage-light); transform: scale(0.99); }
+
+.crisis-call-info {}
+.crisis-call-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+}
+.crisis-call-num {
+  font-size: 13px;
+  color: var(--sage-dark);
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 2px;
+  display: block;
+}
+
+.call-icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+
+/* ===================== PROFILE SCREEN ===================== */
+#screen-profile { background: var(--sand-light); }
+
+.profile-header-card {
+  margin: 0 24px 16px;
+  background: var(--ink);
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-avatar {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: white; font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.profile-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.profile-since {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.profile-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.profile-stat-num {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  display: block;
+}
+
+.profile-stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  font-family: 'DM Sans', sans-serif;
+  display: block;
+  margin-top: 2px;
+}
+
+.profile-stat + .profile-stat {
+  border-right: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.settings-group {
+  margin: 0 24px 16px;
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 0.5px solid rgba(0,0,0,0.06);
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.settings-item:not(:last-child) {
+  border-bottom: 0.5px solid rgba(0,0,0,0.06);
+}
+.settings-item:active { background: var(--sand-light); }
+
+.settings-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.si-sage { background: var(--sage-light); }
+.si-amber { background: var(--amber-light); }
+.si-rose { background: var(--rose-light); }
+.si-gray { background: var(--sand); }
+
+.settings-label {
+  font-size: 14px;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.settings-arrow {
+  font-size: 14px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ===================== CHAT CIRCLE SCREEN ===================== */
+#screen-chat { background: var(--sand-light); }
+
+.chat-scroll { flex: 1; padding: 0 16px; overflow-y: auto; scrollbar-width: none; }
+.chat-scroll::-webkit-scrollbar { display: none; }
+
+.chat-date-sep {
+  text-align: center;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink-muted);
+  margin: 12px 0;
+}
+
+.chat-bubble-wrap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-items: flex-end;
+}
+
+.chat-bubble-wrap.own {
+  flex-direction: row-reverse;
+}
+
+.chat-avatar-sm {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.chat-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.5;
+  direction: rtl;
+}
+
+.chat-bubble.other {
+  background: var(--white);
+  color: var(--ink);
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.own {
+  background: var(--sage);
+  color: white;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-time {
+  font-size: 10px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+.chat-input-bar {
+  padding: 10px 16px 28px;
+  background: var(--white);
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--sand-light);
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-family: 'Noto Naskh Arabic', serif;
+  font-size: 15px;
+  color: var(--ink);
+  direction: rtl;
+  resize: none;
+  min-height: 40px;
+  max-height: 100px;
+}
+
+.chat-send-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--sage);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.chat-send-btn:active { transform: scale(0.95); }
+
+/* TOAST */
+.toast {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: white;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  padding: 10px 20px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 200;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Loading dots */
+.loading-dots {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px 0;
+}
+.loading-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sage);
+  animation: dot-bounce 1.2s infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dot-bounce {
+  0%,80%,100% { transform: scale(0.8); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Fade in animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.4s ease forwards; }
+
+/* Language toggle switch */
+.lang-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lang-label {
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+.lang-label.active-lang {
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+.lang-switch {
+  width: 44px;
+  height: 24px;
+  background: var(--sand);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: none;
+  padding: 0;
+}
+.lang-switch.en {
+  background: var(--sage);
+}
+.lang-switch-knob {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  transition: all 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.lang-switch.en .lang-switch-knob {
+  right: auto;
+  left: 2px;
+}
+
+/* LTR mode overrides */
+.phone.ltr {
+  direction: ltr;
+}
+.phone.ltr .journal-textarea,
+.phone.ltr .chat-bubble,
+.phone.ltr .chat-input {
+  direction: ltr;
+}
+.phone.ltr .profile-stat + .profile-stat {
+  border-right: none;
+  border-left: 0.5px solid rgba(255,255,255,0.1);
+}
+.phone.ltr .member-avatar {
+  margin-right: 0;
+  margin-left: -8px;
+}
+.phone.ltr .member-count {
+  margin-right: 0;
+  margin-left: 8px;
+}
+.phone.ltr .last-msg {
+  margin-right: 0;
+  margin-left: auto;
+}
+.phone.ltr .back-btn,
+.phone.ltr .back-btn-light {
+  transform: scaleX(-1);
+}
+.phone.ltr .settings-arrow {
+  transform: scaleX(-1);
+}
+.phone.ltr .chat-bubble-wrap.own {
+  flex-direction: row-reverse;
+}
+
+/* ===================== AI CHAT COMPANION ===================== */
+#screen-ai-chat { background: var(--sand-light); }
+
+.ai-chat-header {
+  padding: 8px 24px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--sand-light);
+}
+
+.ai-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage) 0%, #5BA88A 50%, var(--amber) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(124,158,138,0.4);
+  position: relative;
+}
+.ai-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: 1px; right: 1px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #4ADE80;
+  border: 2px solid var(--sand-light);
+}
+
+.ai-header-info { flex: 1; }
+.ai-header-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ai-header-status {
+  font-size: 11px;
+  color: var(--sage-dark);
+  font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; gap: 4px;
+}
+.ai-status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ADE80;
+  animation: blink 1.5s infinite;
+}
+
+.ai-chat-scroll {
+  flex: 1;
+  padding: 0 16px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.ai-chat-scroll::-webkit-scrollbar { display: none; }
+
+/* AI message bubbles */
+.ai-msg-wrap {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+  animation: fadeUp 0.3s ease forwards;
+}
+
+.ai-msg-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.ai-msg-bubble {
+  max-width: 78%;
+  padding: 12px 16px;
+  border-radius: 18px 18px 4px 18px;
+  background: linear-gradient(135deg, var(--sage-light) 0%, rgba(234,242,237,0.6) 100%);
+  border: 0.5px solid rgba(124,158,138,0.2);
+  font-size: 14px;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+}
+.phone.ltr .ai-msg-bubble {
+  border-radius: 18px 18px 18px 4px;
+}
+
+.user-ai-msg-wrap {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+  animation: fadeUp 0.3s ease forwards;
+}
+
+.user-ai-bubble {
+  max-width: 78%;
+  padding: 12px 16px;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--sage);
+  color: white;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+}
+.phone.ltr .user-ai-bubble {
+  border-radius: 18px 18px 4px 18px;
+}
+
+/* Typing indicator */
+.ai-typing {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+}
+.ai-typing-bubble {
+  padding: 14px 20px;
+  border-radius: 18px 18px 4px 18px;
+  background: var(--sage-light);
+  display: flex; gap: 4px; align-items: center;
+}
+.ai-typing-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--sage);
+  animation: dot-bounce 1.2s infinite;
+}
+.ai-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.ai-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Quick suggestion chips */
+.ai-suggestions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.ai-suggestions::-webkit-scrollbar { display: none; }
+
+.ai-chip-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: var(--white);
+  border: 1px solid rgba(124,158,138,0.3);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--sage-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.ai-chip-btn:active {
+  background: var(--sage-light);
+  transform: scale(0.97);
+}
+
+/* AI chat input bar */
+.ai-input-bar {
+  padding: 10px 16px 28px;
+  background: var(--white);
+  border-top: 0.5px solid rgba(0,0,0,0.08);
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.ai-text-input {
+  flex: 1;
+  background: var(--sand-light);
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  resize: none;
+  min-height: 40px;
+  max-height: 100px;
+}
+
+.ai-voice-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--rose-light);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.ai-voice-btn.recording {
+  background: var(--rose);
+  animation: pulse-rec 1s infinite;
+}
+
+.ai-send-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--sage);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.ai-send-btn:active { transform: scale(0.95); }
+
+/* Action cards inside AI chat */
+.ai-action-card {
+  margin: 8px 0;
+  padding: 14px;
+  background: var(--white);
+  border-radius: 16px;
+  border: 1px solid rgba(124,158,138,0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ai-action-card:active { transform: scale(0.98); background: var(--sage-light); }
+
+.ai-action-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.ai-action-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--sage-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.ai-action-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.ai-action-desc {
+  font-size: 12px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.5;
+}
+
+/* Crisis mode banner */
+.crisis-mode-banner {
+  margin: 8px 0;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--rose-light) 0%, #FCE4E4 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(196,132,122,0.3);
+}
+.crisis-mode-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--rose);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.crisis-mode-text {
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.crisis-sos-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--rose);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Home AI talk card */
+.ai-talk-card {
+  margin: 0 24px 16px;
+  background: linear-gradient(135deg, var(--ink) 0%, #2A4A3E 100%);
+  border-radius: 20px;
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.ai-talk-card::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: var(--sage);
+  opacity: 0.15;
+}
+.ai-talk-card:active { transform: scale(0.98); }
+
+.ai-talk-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sage), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(124,158,138,0.3);
+}
+
+.ai-talk-info { flex: 1; position: relative; z-index: 1; }
+.ai-talk-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 3px;
+}
+.ai-talk-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  font-family: 'DM Sans', sans-serif;
+}
+.ai-talk-arrow {
+  font-size: 16px;
+  color: rgba(255,255,255,0.4);
+  position: relative; z-index: 1;
+}
+
+/* Journal prompt modal */
+.journal-prompt-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 32px;
+}
+.journal-prompt-overlay.show { display: flex; }
+
+.journal-prompt-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 28px 24px;
+  text-align: center;
+  width: 100%;
+  animation: fadeUp 0.3s ease;
+}
+.journal-prompt-emoji { font-size: 40px; margin-bottom: 12px; }
+.journal-prompt-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.journal-prompt-text {
+  font-size: 14px;
+  color: var(--ink-muted);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.journal-prompt-btns { display: flex; gap: 10px; }
+.journal-prompt-yes {
+  flex: 1;
+  padding: 14px;
+  background: var(--sage);
+  color: white;
+  border: none;
+  border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.journal-prompt-no {
+  flex: 1;
+  padding: 14px;
+  background: var(--sand-light);
+  color: var(--ink-muted);
+  border: none;
+  border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>●●● 5G 🔋</span>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ==================== ONBOARDING ==================== -->
+  <div class="screen active" id="screen-onboard">
+    <div class="onboard-bg">
+      <div class="onboard-circle" style="width:300px;height:300px;background:#7C9E8A;top:-100px;right:-80px;"></div>
+      <div class="onboard-circle" style="width:200px;height:200px;background:#C9A96E;bottom:100px;left:-60px;"></div>
+      <div class="onboard-circle" style="width:150px;height:150px;background:#C4847A;bottom:200px;right:-40px;"></div>
+    </div>
+    <div class="onboard-content">
+      <div class="onboard-logo">
+        <span class="logo-arabic">نفسي</span>
+        <span class="logo-latin">Nafsy · Your mental wellness companion</span>
+      </div>
+      <div class="onboard-middle">
+        <p class="onboard-headline" data-i18n="onboard_headline">مكانك الآمن للتعبير عن نفسك</p>
+        <p class="onboard-sub" data-i18n="onboard_sub">رفيقك الذكي لتتبع مشاعرك، واكتشاف الإجهاد مبكراً، والعيش بتوازن نفسي حقيقي.</p>
+      </div>
+      <div class="onboard-bottom">
+        <div class="steps-dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <button class="btn-primary" onclick="navigate('home')" data-i18n="onboard_start">ابدئي رحلتك</button>
+        <button class="btn-secondary" data-i18n="onboard_login">تسجيل الدخول</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HOME ==================== -->
+  <div class="screen" id="screen-home">
+    <div class="scroll-area">
+      <div class="home-header fade-up">
+        <div class="greeting-row">
+          <div>
+            <div class="greeting-text" data-i18n="greeting">صباح الخير 🌿</div>
+            <div class="user-name" data-i18n="user_name">نور</div>
+          </div>
+          <div class="avatar-btn" onclick="navigate('profile')" data-i18n="avatar_letter">ن</div>
+        </div>
+      </div>
+
+      <!-- Burnout Score Card -->
+      <div class="burnout-card fade-up" onclick="navigate('journal')">
+        <div class="burnout-label" data-i18n="burnout_label">مؤشر الإجهاد هذا الأسبوع</div>
+        <div class="burnout-score-row">
+          <div>
+            <span class="burnout-score" id="home-burnout-score">34</span>
+            <span class="burnout-score-max">/100</span>
+          </div>
+          <span class="burnout-status" id="home-burnout-status" data-i18n="burnout_status">✓ بحالة جيدة</span>
+        </div>
+        <div class="burnout-bar-wrap">
+          <div class="burnout-bar-fill" id="home-burnout-bar"></div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-title" data-i18n="quick_title">ماذا تريدين اليوم؟</div>
+      <div class="quick-actions fade-up">
+        <div class="quick-btn" onclick="navigate('journal')">
+          <span class="quick-icon">📓</span>
+          <span class="quick-label" data-i18n="quick_journal">سجلي يومك</span>
+        </div>
+        <div class="quick-btn" onclick="navigate('exercises')">
+          <span class="quick-icon">🫁</span>
+          <span class="quick-label" data-i18n="quick_exercises">تمارين</span>
+        </div>
+        <div class="quick-btn" onclick="navigate('circles')">
+          <span class="quick-icon">💬</span>
+          <span class="quick-label" data-i18n="quick_circles">دائرتي</span>
+        </div>
+        <div class="quick-btn" onclick="navigate('crisis')">
+          <span class="quick-icon">🆘</span>
+          <span class="quick-label" data-i18n="quick_help">مساعدة</span>
+        </div>
+      </div>
+
+      <!-- Weekly Mood -->
+      <div class="section-title" data-i18n="mood_week_title">مزاجك هذا الأسبوع</div>
+      <div class="mood-strip fade-up">
+        <div class="mood-row">
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_sun">أحد</span>
+            <div class="mood-dot" style="background:#F5E8E6;">😔</div>
+          </div>
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_mon">اثن</span>
+            <div class="mood-dot" style="background:#F7F0E3;">😐</div>
+          </div>
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_tue">ثلا</span>
+            <div class="mood-dot" style="background:#EAF2ED;">🙂</div>
+          </div>
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_wed">أرب</span>
+            <div class="mood-dot" style="background:#EAF2ED;">😊</div>
+          </div>
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_thu">خمس</span>
+            <div class="mood-dot" style="background:#F7F0E3;">😐</div>
+          </div>
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_fri">جمع</span>
+            <div class="mood-dot" style="background:#EAF2ED;">🙂</div>
+          </div>
+          <div class="mood-day">
+            <span class="mood-day-label" data-i18n="day_sat">سبت</span>
+            <div class="mood-dot" style="background:#EAF2ED;">😊</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Insight -->
+      <div class="section-title" data-i18n="ai_insight_title">رؤية الذكاء الاصطناعي</div>
+      <div class="insight-card fade-up" onclick="navigate('journal')">
+        <div class="insight-icon-wrap">🧠</div>
+        <div class="insight-content">
+          <div class="insight-badge" data-i18n="insight_badge">تحليل هذا الأسبوع</div>
+          <div class="insight-text" id="home-insight-text" data-i18n="insight_text">لاحظت نمطاً من التعب في منتصف الأسبوع. جربي تمرين التوكل اليوم — نتائجه مع أشخاص مثلك كانت ممتازة.</div>
+        </div>
+      </div>
+
+      <!-- Talk to Nafsy AI -->
+      <div class="ai-talk-card fade-up" onclick="navigate('ai-chat')">
+        <div class="ai-talk-avatar">🧠</div>
+        <div class="ai-talk-info">
+          <div class="ai-talk-title" data-i18n="ai_talk_title">تحدثي مع نفسي AI 💬</div>
+          <div class="ai-talk-sub" data-i18n="ai_talk_sub">رفيقتك الذكية جاهزة للاستماع</div>
+        </div>
+        <span class="ai-talk-arrow">›</span>
+      </div>
+
+      <div style="height:16px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="navigate('home')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label" data-i18n="nav_home">الرئيسية</span>
+      </div>
+      <div class="nav-item" onclick="navigate('journal')">
+        <span class="nav-icon">📓</span>
+        <span class="nav-label" data-i18n="nav_journal">يومياتي</span>
+      </div>
+      <div class="nav-item" onclick="navigate('exercises')">
+        <span class="nav-icon">🌿</span>
+        <span class="nav-label" data-i18n="nav_exercises">تمارين</span>
+      </div>
+      <div class="nav-item" onclick="navigate('circles')">
+        <span class="nav-icon">👥</span>
+        <span class="nav-label" data-i18n="nav_circles">دائرتي</span>
+      </div>
+      <div class="nav-item" onclick="navigate('profile')">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label" data-i18n="nav_profile">حسابي</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JOURNAL ==================== -->
+  <div class="screen" id="screen-journal">
+    <div class="screen-header">
+      <div class="back-btn" onclick="navigate('home')">←</div>
+      <div class="screen-title" data-i18n="nav_journal">يومياتي</div>
+      <div class="screen-title-spacer"></div>
+    </div>
+
+    <div class="scroll-area">
+      <!-- Date strip -->
+      <div class="date-strip">
+        <div class="date-chip"><span class="day-name" data-i18n="day_sun_full">أحد</span><span class="day-num">20</span></div>
+        <div class="date-chip"><span class="day-name" data-i18n="day_mon_full">اثنين</span><span class="day-num">21</span></div>
+        <div class="date-chip"><span class="day-name" data-i18n="day_tue_full">ثلاثاء</span><span class="day-num">22</span></div>
+        <div class="date-chip"><span class="day-name" data-i18n="day_wed_full">أربعاء</span><span class="day-num">23</span></div>
+        <div class="date-chip"><span class="day-name" data-i18n="day_thu_full">خميس</span><span class="day-num">24</span></div>
+        <div class="date-chip"><span class="day-name" data-i18n="day_fri_full">جمعة</span><span class="day-num">25</span></div>
+        <div class="date-chip active"><span class="day-name" data-i18n="day_sat_full">سبت</span><span class="day-num">26</span></div>
+      </div>
+
+      <!-- Mood Picker -->
+      <div class="mood-picker-card">
+        <span class="mood-picker-title" data-i18n="mood_how">كيف حالك الآن؟</span>
+        <div class="mood-emojis">
+          <div class="mood-emoji-btn" onclick="selectMood(this, 1)">😢</div>
+          <div class="mood-emoji-btn" onclick="selectMood(this, 2)">😔</div>
+          <div class="mood-emoji-btn selected" onclick="selectMood(this, 3)">😐</div>
+          <div class="mood-emoji-btn" onclick="selectMood(this, 4)">🙂</div>
+          <div class="mood-emoji-btn" onclick="selectMood(this, 5)">😊</div>
+        </div>
+      </div>
+
+      <!-- Journal Text Area -->
+      <div class="journal-input-card">
+        <span class="journal-input-label" data-i18n="journal_label">اكتبي أفكارك بحرية...</span>
+        <textarea class="journal-textarea" id="journal-text" data-i18n-ph="journal_placeholder" placeholder="ماذا يدور في ذهنك اليوم؟ لا يوجد صح أو خطأ هنا..." oninput="updateCharCount()" onblur="analyzeJournal()"></textarea>
+        <div class="journal-footer">
+          <span class="char-count" id="char-count">0 / 500</span>
+          <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">🎤</button>
+        </div>
+      </div>
+
+      <!-- AI Analysis (hidden initially) -->
+      <div class="ai-result-card" id="ai-result" style="display:none;">
+        <div class="ai-result-header">
+          <div class="ai-chip"><div class="ai-dot"></div> <span data-i18n="ai_chip">تحليل الذكاء الاصطناعي</span></div>
+        </div>
+        <div id="ai-loading" class="loading-dots">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+        </div>
+        <div id="ai-text" class="ai-result-text" style="display:none;"></div>
+        <div id="emotion-tags" class="emotion-tags" style="display:none;">
+          <span class="emotion-tag fatigue" data-i18n="tag_fatigue">إجهاد خفيف</span>
+          <span class="emotion-tag hope" data-i18n="tag_hope">أمل</span>
+          <span class="emotion-tag stress" data-i18n="tag_stress">ضغط نفسي</span>
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div class="save-btn-wrap">
+        <button class="btn-save" onclick="saveJournal()" data-i18n="save_btn">حفظ السجل ✓</button>
+      </div>
+
+      <div style="height:16px;"></div>
+    </div>
+
+    <!-- Journal Prompt Overlay -->
+    <div class="journal-prompt-overlay" id="journal-prompt">
+      <div class="journal-prompt-card">
+        <div class="journal-prompt-emoji">🧠</div>
+        <div class="journal-prompt-title" data-i18n="jp_title">هل تريدين التحدث عن مشاعرك؟</div>
+        <div class="journal-prompt-text" data-i18n="jp_text">نفسي AI جاهزة تسمعك وتساعدك تفهمي مشاعرك أكثر.</div>
+        <div class="journal-prompt-btns">
+          <button class="journal-prompt-yes" data-i18n="jp_yes" onclick="closeJournalPrompt(); navigate('ai-chat')">نعم، تحدثي معي 💬</button>
+          <button class="journal-prompt-no" data-i18n="jp_no" onclick="closeJournalPrompt()">ليس الآن</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navigate('home')"><span class="nav-icon">🏠</span><span class="nav-label" data-i18n="nav_home">الرئيسية</span></div>
+      <div class="nav-item active" onclick="navigate('journal')"><span class="nav-icon">📓</span><span class="nav-label" data-i18n="nav_journal">يومياتي</span></div>
+      <div class="nav-item" onclick="navigate('exercises')"><span class="nav-icon">🌿</span><span class="nav-label" data-i18n="nav_exercises">تمارين</span></div>
+      <div class="nav-item" onclick="navigate('circles')"><span class="nav-icon">👥</span><span class="nav-label" data-i18n="nav_circles">دائرتي</span></div>
+      <div class="nav-item" onclick="navigate('profile')"><span class="nav-icon">👤</span><span class="nav-label" data-i18n="nav_profile">حسابي</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== EXERCISES ==================== -->
+  <div class="screen" id="screen-exercises">
+    <div class="screen-header">
+      <div class="back-btn" onclick="navigate('home')">←</div>
+      <div class="screen-title" data-i18n="exercises_title">تمارين العافية</div>
+      <div class="screen-title-spacer"></div>
+    </div>
+
+    <div class="scroll-area">
+      <div class="exercise-tabs">
+        <div class="ex-tab active" data-i18n="tab_all">الكل</div>
+        <div class="ex-tab" data-i18n="tab_tawakkul">التوكل</div>
+        <div class="ex-tab" data-i18n="tab_breathing">التنفس</div>
+        <div class="ex-tab" data-i18n="tab_gratitude">الامتنان</div>
+        <div class="ex-tab" data-i18n="tab_patience">الصبر</div>
+      </div>
+
+      <div class="exercise-card" onclick="navigate('player')">
+        <div class="exercise-card-header">
+          <div class="exercise-icon-wrap icon-teal">🫁</div>
+          <div class="exercise-info">
+            <span class="exercise-name" data-i18n="ex1_name">تنفس 4-7-8 للهدوء</span>
+            <span class="exercise-desc" data-i18n="ex1_desc">تقنية تنفس علمية تُهدئ الجهاز العصبي في دقائق. مستوحاة من ممارسات الذكر.</span>
+          </div>
+        </div>
+        <div class="exercise-meta">
+          <span class="meta-chip" data-i18n="ex1_m1">⏱ 5 دقائق</span>
+          <span class="meta-chip" data-i18n="ex1_m2">⭐ الأكثر فعالية</span>
+          <span class="meta-chip" data-i18n="ex1_m3">🌿 للقلق</span>
+        </div>
+      </div>
+
+      <div class="exercise-card" onclick="navigate('player')">
+        <div class="exercise-card-header">
+          <div class="exercise-icon-wrap icon-amber">🤲</div>
+          <div class="exercise-info">
+            <span class="exercise-name" data-i18n="ex2_name">تأمل التوكل على الله</span>
+            <span class="exercise-desc" data-i18n="ex2_desc">مارسي الإفراج عن القلق من خلال توكيدات مستوحاة من القرآن والأدعية المأثورة.</span>
+          </div>
+        </div>
+        <div class="exercise-meta">
+          <span class="meta-chip" data-i18n="ex2_m1">⏱ 8 دقائق</span>
+          <span class="meta-chip" data-i18n="ex2_m2">🤲 روحاني</span>
+          <span class="meta-chip" data-i18n="ex2_m3">💚 موصى به</span>
+        </div>
+      </div>
+
+      <div class="exercise-card" onclick="navigate('player')">
+        <div class="exercise-card-header">
+          <div class="exercise-icon-wrap icon-rose">📿</div>
+          <div class="exercise-info">
+            <span class="exercise-name" data-i18n="ex3_name">يوميات الامتنان — الشكر</span>
+            <span class="exercise-desc" data-i18n="ex3_desc">سجلي ثلاثة أشياء تشعرين بالامتنان لها اليوم. تقنية مُثبتة علمياً لرفع الحالة المزاجية.</span>
+          </div>
+        </div>
+        <div class="exercise-meta">
+          <span class="meta-chip" data-i18n="ex3_m1">⏱ 3 دقائق</span>
+          <span class="meta-chip" data-i18n="ex3_m2">✍️ كتابة</span>
+          <span class="meta-chip" data-i18n="ex3_m3">🌸 للتعب</span>
+        </div>
+      </div>
+
+      <div class="exercise-card" onclick="navigate('player')">
+        <div class="exercise-card-header">
+          <div class="exercise-icon-wrap icon-teal">🧘</div>
+          <div class="exercise-info">
+            <span class="exercise-name" data-i18n="ex4_name">تمرين الصبر — الوعي الحاضر</span>
+            <span class="exercise-desc" data-i18n="ex4_desc">مدّي الصبر من خلال تمرين الحضور الذهني — أصيل ثقافياً ومدعوم بعلم النفس.</span>
+          </div>
+        </div>
+        <div class="exercise-meta">
+          <span class="meta-chip" data-i18n="ex4_m1">⏱ 10 دقائق</span>
+          <span class="meta-chip" data-i18n="ex4_m2">🧘 تأمل</span>
+          <span class="meta-chip" data-i18n="ex4_m3">💙 للإجهاد</span>
+        </div>
+      </div>
+
+      <div style="height:16px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navigate('home')"><span class="nav-icon">🏠</span><span class="nav-label" data-i18n="nav_home">الرئيسية</span></div>
+      <div class="nav-item" onclick="navigate('journal')"><span class="nav-icon">📓</span><span class="nav-label" data-i18n="nav_journal">يومياتي</span></div>
+      <div class="nav-item active" onclick="navigate('exercises')"><span class="nav-icon">🌿</span><span class="nav-label" data-i18n="nav_exercises">تمارين</span></div>
+      <div class="nav-item" onclick="navigate('circles')"><span class="nav-icon">👥</span><span class="nav-label" data-i18n="nav_circles">دائرتي</span></div>
+      <div class="nav-item" onclick="navigate('profile')"><span class="nav-icon">👤</span><span class="nav-label" data-i18n="nav_profile">حسابي</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== EXERCISE PLAYER ==================== -->
+  <div class="screen" id="screen-player">
+    <div class="player-header">
+      <button class="back-btn-light" onclick="navigate('exercises')">←</button>
+      <div class="player-title" data-i18n="player_title">تنفس 4-7-8</div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <div class="breath-container">
+      <div class="breath-circle-outer" id="breath-outer">
+        <div class="breath-circle-inner">
+          <div class="breath-phase" id="breath-phase" data-i18n="breath_ready">استعدي</div>
+          <div class="breath-count" id="breath-count">—</div>
+        </div>
+      </div>
+
+      <div class="breath-instruction">
+        <div class="breath-instruction-text" id="breath-text" data-i18n="breath_start_msg">
+          اضغطي ابدأي لتبدأ جلسة التنفس العلاجية
+        </div>
+        <div class="breath-step-dots">
+          <div class="dot" id="bdot1"></div>
+          <div class="dot" id="bdot2"></div>
+          <div class="dot" id="bdot3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <button class="btn-breath-start" id="breath-start-btn" onclick="startBreathing()" data-i18n="breath_start_btn">ابدأي التمرين 🌿</button>
+      <button class="btn-breath-stop" id="breath-stop-btn" style="display:none;" onclick="stopBreathing()" data-i18n="breath_stop_btn">إيقاف</button>
+    </div>
+  </div>
+
+  <!-- ==================== CIRCLES ==================== -->
+  <div class="screen" id="screen-circles">
+    <div class="screen-header">
+      <div class="back-btn" onclick="navigate('home')">←</div>
+      <div class="screen-title" data-i18n="circles_title">دوائر الدعم</div>
+      <div class="screen-title-spacer"></div>
+    </div>
+
+    <div class="scroll-area">
+      <div style="padding: 0 24px 12px; font-size:13px; color:var(--ink-muted); font-family:'DM Sans',sans-serif; line-height:1.6;" data-i18n="circles_desc">
+        دوائر مجهولة الهوية لنساء لديهن تجارب مماثلة. مساحة آمنة، خاصة، ومُشرفة.
+      </div>
+
+      <div class="circle-card" onclick="navigate('chat')">
+        <div class="circle-header">
+          <span class="circle-name" data-i18n="circle1_name">💚 طالبات في منتصف الفصل</span>
+          <span class="circle-badge badge-active" data-i18n="badge_active_now">نشطة الآن</span>
+        </div>
+        <div class="circle-desc" data-i18n="circle1_desc">دائرة لطالبات الجامعة يمررن بضغط الاختبارات والمستقبل. تشاركن، تسمعن، تتعافين.</div>
+        <div class="circle-members">
+          <div class="member-avatars">
+            <div class="member-avatar" style="background:#EAF2ED;color:#4A7060;">ن</div>
+            <div class="member-avatar" style="background:#F7F0E3;color:#8A6020;">س</div>
+            <div class="member-avatar" style="background:#F5E8E6;color:#8A3A30;">م</div>
+          </div>
+          <span class="member-count" data-i18n="circle1_count">+2 أخريات</span>
+          <span class="last-msg" data-i18n="circle1_time">قبل 5 دقائق</span>
+        </div>
+      </div>
+
+      <div class="circle-card" onclick="navigate('chat')">
+        <div class="circle-header">
+          <span class="circle-name" data-i18n="circle2_name">🌸 أمهات جدد</span>
+          <span class="circle-badge badge-active" data-i18n="badge_active">نشطة</span>
+        </div>
+        <div class="circle-desc" data-i18n="circle2_desc">لمن تعانين من إجهاد الأمومة في صمت. أنتن لستن وحدكن.</div>
+        <div class="circle-members">
+          <div class="member-avatars">
+            <div class="member-avatar" style="background:#EAF2ED;color:#4A7060;">ف</div>
+            <div class="member-avatar" style="background:#F5E8E6;color:#8A3A30;">ه</div>
+          </div>
+          <span class="member-count" data-i18n="circle2_count">+3 أخريات</span>
+          <span class="last-msg" data-i18n="circle2_time">قبل ساعة</span>
+        </div>
+      </div>
+
+      <div class="circle-card" onclick="navigate('chat')">
+        <div class="circle-header">
+          <span class="circle-name" data-i18n="circle3_name">🌙 المؤرق صاحي الليل</span>
+          <span class="circle-badge badge-new" data-i18n="badge_new">جديدة</span>
+        </div>
+        <div class="circle-desc" data-i18n="circle3_desc">للذين يعانون من الأرق والقلق الليلي. مجتمع هادئ للساعات الصعبة.</div>
+        <div class="circle-members">
+          <div class="member-avatars">
+            <div class="member-avatar" style="background:#EAF2ED;color:#4A7060;">ر</div>
+          </div>
+          <span class="member-count" data-i18n="circle3_count">+1 أخرى</span>
+          <span class="last-msg" data-i18n="circle3_time">جديدة</span>
+        </div>
+      </div>
+
+      <div style="height:16px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navigate('home')"><span class="nav-icon">🏠</span><span class="nav-label" data-i18n="nav_home">الرئيسية</span></div>
+      <div class="nav-item" onclick="navigate('journal')"><span class="nav-icon">📓</span><span class="nav-label" data-i18n="nav_journal">يومياتي</span></div>
+      <div class="nav-item" onclick="navigate('exercises')"><span class="nav-icon">🌿</span><span class="nav-label" data-i18n="nav_exercises">تمارين</span></div>
+      <div class="nav-item active" onclick="navigate('circles')"><span class="nav-icon">👥</span><span class="nav-label" data-i18n="nav_circles">دائرتي</span></div>
+      <div class="nav-item" onclick="navigate('profile')"><span class="nav-icon">👤</span><span class="nav-label" data-i18n="nav_profile">حسابي</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== CHAT ==================== -->
+  <div class="screen" id="screen-chat">
+    <div class="screen-header">
+      <div class="back-btn" onclick="navigate('circles')">←</div>
+      <div class="screen-title" style="font-size:16px;" data-i18n="circle1_name">💚 طالبات في منتصف الفصل</div>
+      <div class="screen-title-spacer"></div>
+    </div>
+
+    <div class="chat-scroll" id="chat-scroll">
+      <div class="chat-date-sep" data-i18n="chat_today">اليوم</div>
+
+      <div class="chat-bubble-wrap">
+        <div class="chat-avatar-sm" style="background:#F7F0E3;color:#8A6020;">س</div>
+        <div>
+          <div class="chat-bubble other">الحمد لله أنا مش لوحدي، كنت خايفة أقول لحد بس هنا حاسة بأمان 🌿</div>
+          <div class="chat-time">٩:١٢ ص</div>
+        </div>
+      </div>
+
+      <div class="chat-bubble-wrap">
+        <div class="chat-avatar-sm" style="background:#F5E8E6;color:#8A3A30;">م</div>
+        <div>
+          <div class="chat-bubble other">أنا كمان بمر بنفس اللي بتمري بيه. الامتحانات وضغط الأهل وكل حاجة في نفس الوقت 😔</div>
+          <div class="chat-time">٩:١٥ ص</div>
+        </div>
+      </div>
+
+      <div class="chat-bubble-wrap own">
+        <div style="width:28px;"></div>
+        <div>
+          <div class="chat-bubble own">اتعلمت تمرين التوكل من نفسي وبصراحة غير حياتي. لو حدة منكم جربته يبقى قوليلي رأيها 🤲</div>
+          <div class="chat-time" style="text-align:left;">٩:١٨ ص</div>
+        </div>
+      </div>
+
+      <div class="chat-bubble-wrap">
+        <div class="chat-avatar-sm" style="background:#EAF2ED;color:#4A7060;">ف</div>
+        <div>
+          <div class="chat-bubble other">أنا جربته أمبارح وفعلاً ساعدني أنام أحسن بكتير 💚</div>
+          <div class="chat-time">٩:٢٠ ص</div>
+        </div>
+      </div>
+
+      <div style="height:8px;"></div>
+    </div>
+
+    <div class="chat-input-bar">
+      <button class="chat-send-btn" onclick="sendChatMsg()">↑</button>
+      <textarea class="chat-input" id="chat-input" data-i18n-ph="chat_placeholder" placeholder="اكتبي رسالتك..." rows="1"></textarea>
+    </div>
+  </div>
+
+  <!-- ==================== CRISIS ==================== -->
+  <div class="screen" id="screen-crisis">
+    <div class="screen-header">
+      <div class="back-btn" onclick="navigate('home')">←</div>
+      <div class="screen-title" data-i18n="crisis_title">طلب المساعدة</div>
+      <div class="screen-title-spacer"></div>
+    </div>
+
+    <div class="scroll-area">
+      <div class="crisis-banner">
+        <div class="crisis-banner-title" data-i18n="crisis_banner_title">❤️ أنتِ لستِ وحدك</div>
+        <div class="crisis-banner-text" data-i18n="crisis_banner_text">إذا كنتِ تمرين بوقت صعب، الخطوة الأولى هي أن تتكلمي. هناك من يسمعك ويهتم بك الآن.</div>
+      </div>
+
+      <div class="section-title" data-i18n="crisis_lines_title">خطوط الدعم المتخصصة</div>
+
+      <div class="crisis-call-btn" onclick="showToast(t('toast_calling_child'))">
+        <div class="crisis-call-info">
+          <span class="crisis-call-name" data-i18n="crisis_line1_name">خط نجدة الطفل والمرأة</span>
+          <span class="crisis-call-num" data-i18n="crisis_line1_num">16000 · متاح 24/7 · مجاني</span>
+        </div>
+        <div class="call-icon">📞</div>
+      </div>
+
+      <div class="crisis-call-btn" onclick="showToast(t('toast_calling_mental'))">
+        <div class="crisis-call-info">
+          <span class="crisis-call-name" data-i18n="crisis_line2_name">نجدة الأمراض النفسية</span>
+          <span class="crisis-call-num" data-i18n="crisis_line2_num">08008880700 · مجاني · سري</span>
+        </div>
+        <div class="call-icon">📞</div>
+      </div>
+
+      <div class="crisis-call-btn" onclick="showToast(t('toast_chat_volunteer'))">
+        <div class="crisis-call-info">
+          <span class="crisis-call-name" data-i18n="crisis_line3_name">دردشة مع متطوع الآن</span>
+          <span class="crisis-call-num" data-i18n="crisis_line3_num">عبر تطبيق نفسي · سري تماماً</span>
+        </div>
+        <div class="call-icon">💬</div>
+      </div>
+
+      <div class="section-title" style="margin-top:8px;" data-i18n="crisis_emergency_title">تمرين طارئ لتهدئة الأعصاب</div>
+
+      <div class="exercise-card" onclick="navigate('player')">
+        <div class="exercise-card-header">
+          <div class="exercise-icon-wrap icon-teal">🫁</div>
+          <div class="exercise-info">
+            <span class="exercise-name" data-i18n="crisis_ex_name">تنفس الأزمات — ٦٠ ثانية</span>
+            <span class="exercise-desc" data-i18n="crisis_ex_desc">تقنية سريعة لإيقاف نوبة القلق في الحال.</span>
+          </div>
+        </div>
+        <div class="exercise-meta">
+          <span class="meta-chip" data-i18n="crisis_ex_m1">⚡ فوري</span>
+          <span class="meta-chip" data-i18n="crisis_ex_m2">🆘 للأزمات</span>
+        </div>
+      </div>
+
+      <div style="height:16px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navigate('home')"><span class="nav-icon">🏠</span><span class="nav-label" data-i18n="nav_home">الرئيسية</span></div>
+      <div class="nav-item" onclick="navigate('journal')"><span class="nav-icon">📓</span><span class="nav-label" data-i18n="nav_journal">يومياتي</span></div>
+      <div class="nav-item" onclick="navigate('exercises')"><span class="nav-icon">🌿</span><span class="nav-label" data-i18n="nav_exercises">تمارين</span></div>
+      <div class="nav-item" onclick="navigate('circles')"><span class="nav-icon">👥</span><span class="nav-label" data-i18n="nav_circles">دائرتي</span></div>
+      <div class="nav-item" onclick="navigate('profile')"><span class="nav-icon">👤</span><span class="nav-label" data-i18n="nav_profile">حسابي</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== PROFILE ==================== -->
+  <div class="screen" id="screen-profile">
+    <div class="screen-header">
+      <div class="back-btn" onclick="navigate('home')">←</div>
+      <div class="screen-title" data-i18n="nav_profile">حسابي</div>
+      <div class="screen-title-spacer"></div>
+    </div>
+
+    <div class="scroll-area">
+      <div class="profile-header-card">
+        <div class="profile-avatar" data-i18n="avatar_letter">ن</div>
+        <div class="profile-name" data-i18n="profile_name">نور أحمد</div>
+        <div class="profile-since" data-i18n="profile_since">معنا منذ يناير ٢٠٢٦</div>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <span class="profile-stat-num">47</span>
+            <span class="profile-stat-label" data-i18n="stat_entries">سجل</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-num">12</span>
+            <span class="profile-stat-label" data-i18n="stat_exercises">تمرين</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-num">3</span>
+            <span class="profile-stat-label" data-i18n="stat_circles">دوائر</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title" data-i18n="settings_title">الإعدادات</div>
+
+      <div class="settings-group">
+        <div class="settings-item" onclick="showToast(t('toast_notifications'))">
+          <div class="settings-item-left">
+            <div class="settings-icon si-sage">🔔</div>
+            <span class="settings-label" data-i18n="set_reminders">تذكيرات يومية</span>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="showToast(t('toast_privacy'))">
+          <div class="settings-item-left">
+            <div class="settings-icon si-amber">🔒</div>
+            <span class="settings-label" data-i18n="set_privacy">الخصوصية والبيانات</span>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" id="lang-settings-item">
+          <div class="settings-item-left">
+            <div class="settings-icon si-sage">🌐</div>
+            <span class="settings-label" data-i18n="set_language">اللغة</span>
+          </div>
+          <div class="lang-toggle-wrap">
+            <span class="lang-label active-lang" id="lang-ar-label">AR</span>
+            <button class="lang-switch" id="lang-switch" onclick="toggleLanguage()">
+              <div class="lang-switch-knob"></div>
+            </button>
+            <span class="lang-label" id="lang-en-label">EN</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-item" onclick="navigate('crisis')">
+          <div class="settings-item-left">
+            <div class="settings-icon si-rose">🆘</div>
+            <span class="settings-label" data-i18n="set_crisis">خطة الأزمات الشخصية</span>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+        <div class="settings-item" onclick="showToast(t('toast_share_report'))">
+          <div class="settings-item-left">
+            <div class="settings-icon si-sage">📊</div>
+            <span class="settings-label" data-i18n="set_share">مشاركة تقريري مع المرشد</span>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="navigate('home')"><span class="nav-icon">🏠</span><span class="nav-label" data-i18n="nav_home">الرئيسية</span></div>
+      <div class="nav-item" onclick="navigate('journal')"><span class="nav-icon">📓</span><span class="nav-label" data-i18n="nav_journal">يومياتي</span></div>
+      <div class="nav-item" onclick="navigate('exercises')"><span class="nav-icon">🌿</span><span class="nav-label" data-i18n="nav_exercises">تمارين</span></div>
+      <div class="nav-item" onclick="navigate('circles')"><span class="nav-icon">👥</span><span class="nav-label" data-i18n="nav_circles">دائرتي</span></div>
+      <div class="nav-item active" onclick="navigate('profile')"><span class="nav-icon">👤</span><span class="nav-label" data-i18n="nav_profile">حسابي</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== AI CHAT ==================== -->
+  <div class="screen" id="screen-ai-chat">
+    <div class="ai-chat-header">
+      <div class="back-btn" onclick="navigate('home')">←</div>
+      <div class="ai-avatar">🧠</div>
+      <div class="ai-header-info">
+        <div class="ai-header-name" data-i18n="ai_name">نفسي AI</div>
+        <div class="ai-header-status"><div class="ai-status-dot"></div> <span data-i18n="ai_status">متصلة الآن</span></div>
+      </div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <div class="ai-chat-scroll" id="ai-chat-scroll"></div>
+
+    <div class="ai-suggestions" id="ai-suggestions">
+      <button class="ai-chip-btn" onclick="sendAiChip(this)" data-i18n="chip_stressed">😫 أنا متوترة</button>
+      <button class="ai-chip-btn" onclick="sendAiChip(this)" data-i18n="chip_sad">😢 حاسة بحزن</button>
+      <button class="ai-chip-btn" onclick="sendAiChip(this)" data-i18n="chip_mood">📊 حللي مزاجي</button>
+      <button class="ai-chip-btn" onclick="sendAiChip(this)" data-i18n="chip_burnout">🔥 هل عندي إجهاد؟</button>
+      <button class="ai-chip-btn" onclick="sendAiChip(this)" data-i18n="chip_exercise">🌿 أريد تمرين</button>
+    </div>
+
+    <div class="ai-input-bar">
+      <button class="ai-voice-btn" id="ai-voice-btn" onclick="toggleAiVoice()">🎤</button>
+      <textarea class="ai-text-input" id="ai-text-input" data-i18n-ph="ai_input_ph" placeholder="اكتبي لنفسي..." rows="1"></textarea>
+      <button class="ai-send-btn" onclick="sendAiMessage()">↑</button>
+    </div>
+  </div>
+
+</div><!-- end phone -->
+
+<script>
+const ANTHROPIC_KEY_HINT = null;
+
+// ===================== API CONFIG =====================
+// API key is now securely stored in backend .env
+const BACKEND_URL = '/api/chat';
+// ===================== i18n TRANSLATIONS =====================
+let currentLang = 'ar';
+
+const translations = {
+  ar: {
+    onboard_headline: 'مكانك الآمن للتعبير عن نفسك',
+    onboard_sub: 'رفيقك الذكي لتتبع مشاعرك، واكتشاف الإجهاد مبكراً، والعيش بتوازن نفسي حقيقي.',
+    onboard_start: 'ابدئي رحلتك',
+    onboard_login: 'تسجيل الدخول',
+    greeting: 'صباح الخير 🌿',
+    user_name: 'نور',
+    avatar_letter: 'ن',
+    burnout_label: 'مؤشر الإجهاد هذا الأسبوع',
+    burnout_status: '✓ بحالة جيدة',
+    quick_title: 'ماذا تريدين اليوم؟',
+    quick_journal: 'سجلي يومك',
+    quick_exercises: 'تمارين',
+    quick_circles: 'دائرتي',
+    quick_help: 'مساعدة',
+    mood_week_title: 'مزاجك هذا الأسبوع',
+    day_sun: 'أحد', day_mon: 'اثن', day_tue: 'ثلا', day_wed: 'أرب', day_thu: 'خمس', day_fri: 'جمع', day_sat: 'سبت',
+    day_sun_full: 'أحد', day_mon_full: 'اثنين', day_tue_full: 'ثلاثاء', day_wed_full: 'أربعاء', day_thu_full: 'خميس', day_fri_full: 'جمعة', day_sat_full: 'سبت',
+    ai_insight_title: 'رؤية الذكاء الاصطناعي',
+    insight_badge: 'تحليل هذا الأسبوع',
+    insight_text: 'لاحظت نمطاً من التعب في منتصف الأسبوع. جربي تمرين التوكل اليوم — نتائجه مع أشخاص مثلك كانت ممتازة.',
+    nav_home: 'الرئيسية', nav_journal: 'يومياتي', nav_exercises: 'تمارين', nav_circles: 'دائرتي', nav_profile: 'حسابي',
+    mood_how: 'كيف حالك الآن؟',
+    journal_label: 'اكتبي أفكارك بحرية...',
+    journal_placeholder: 'ماذا يدور في ذهنك اليوم؟ لا يوجد صح أو خطأ هنا...',
+    ai_chip: 'تحليل الذكاء الاصطناعي',
+    tag_fatigue: 'إجهاد خفيف', tag_hope: 'أمل', tag_stress: 'ضغط نفسي',
+    save_btn: 'حفظ السجل ✓',
+    exercises_title: 'تمارين العافية',
+    tab_all: 'الكل', tab_tawakkul: 'التوكل', tab_breathing: 'التنفس', tab_gratitude: 'الامتنان', tab_patience: 'الصبر',
+    ex1_name: 'تنفس 4-7-8 للهدوء', ex1_desc: 'تقنية تنفس علمية تُهدئ الجهاز العصبي في دقائق. مستوحاة من ممارسات الذكر.',
+    ex1_m1: '⏱ 5 دقائق', ex1_m2: '⭐ الأكثر فعالية', ex1_m3: '🌿 للقلق',
+    ex2_name: 'تأمل التوكل على الله', ex2_desc: 'مارسي الإفراج عن القلق من خلال توكيدات مستوحاة من القرآن والأدعية المأثورة.',
+    ex2_m1: '⏱ 8 دقائق', ex2_m2: '🤲 روحاني', ex2_m3: '💚 موصى به',
+    ex3_name: 'يوميات الامتنان — الشكر', ex3_desc: 'سجلي ثلاثة أشياء تشعرين بالامتنان لها اليوم. تقنية مُثبتة علمياً لرفع الحالة المزاجية.',
+    ex3_m1: '⏱ 3 دقائق', ex3_m2: '✍️ كتابة', ex3_m3: '🌸 للتعب',
+    ex4_name: 'تمرين الصبر — الوعي الحاضر', ex4_desc: 'مدّي الصبر من خلال تمرين الحضور الذهني — أصيل ثقافياً ومدعوم بعلم النفس.',
+    ex4_m1: '⏱ 10 دقائق', ex4_m2: '🧘 تأمل', ex4_m3: '💙 للإجهاد',
+    player_title: 'تنفس 4-7-8',
+    breath_ready: 'استعدي', breath_start_msg: 'اضغطي ابدأي لتبدأ جلسة التنفس العلاجية',
+    breath_start_btn: 'ابدأي التمرين 🌿', breath_stop_btn: 'إيقاف',
+    breath_complete: 'أحسنتِ! انتهت الجلسة بنجاح ✨',
+    breath_inhale: 'استنشقي', breath_hold: 'أمسكي', breath_exhale: 'أخرجي',
+    breath_inhale_text: 'تنفسي ببطء من الأنف... امتلئي بالهواء',
+    breath_hold_text: 'احتفظي بالهواء بلطف... أشعري بالاستقرار',
+    breath_exhale_text: 'أخرجي الهواء ببطء من الفم... أطلقي القلق',
+    circles_title: 'دوائر الدعم',
+    circles_desc: 'دوائر مجهولة الهوية لنساء لديهن تجارب مماثلة. مساحة آمنة، خاصة، ومُشرفة.',
+    circle1_name: '💚 طالبات في منتصف الفصل', circle1_desc: 'دائرة لطالبات الجامعة يمررن بضغط الاختبارات والمستقبل. تشاركن، تسمعن، تتعافين.',
+    circle1_count: '+2 أخريات', circle1_time: 'قبل 5 دقائق',
+    badge_active_now: 'نشطة الآن', badge_active: 'نشطة', badge_new: 'جديدة',
+    circle2_name: '🌸 أمهات جدد', circle2_desc: 'لمن تعانين من إجهاد الأمومة في صمت. أنتن لستن وحدكن.',
+    circle2_count: '+3 أخريات', circle2_time: 'قبل ساعة',
+    circle3_name: '🌙 المؤرق صاحي الليل', circle3_desc: 'للذين يعانون من الأرق والقلق الليلي. مجتمع هادئ للساعات الصعبة.',
+    circle3_count: '+1 أخرى', circle3_time: 'جديدة',
+    chat_today: 'اليوم', chat_placeholder: 'اكتبي رسالتك...',
+    crisis_title: 'طلب المساعدة',
+    crisis_banner_title: '❤️ أنتِ لستِ وحدك',
+    crisis_banner_text: 'إذا كنتِ تمرين بوقت صعب، الخطوة الأولى هي أن تتكلمي. هناك من يسمعك ويهتم بك الآن.',
+    crisis_lines_title: 'خطوط الدعم المتخصصة',
+    crisis_line1_name: 'خط نجدة الطفل والمرأة', crisis_line1_num: '16000 · متاح 24/7 · مجاني',
+    crisis_line2_name: 'نجدة الأمراض النفسية', crisis_line2_num: '08008880700 · مجاني · سري',
+    crisis_line3_name: 'دردشة مع متطوع الآن', crisis_line3_num: 'عبر تطبيق نفسي · سري تماماً',
+    crisis_emergency_title: 'تمرين طارئ لتهدئة الأعصاب',
+    crisis_ex_name: 'تنفس الأزمات — ٦٠ ثانية', crisis_ex_desc: 'تقنية سريعة لإيقاف نوبة القلق في الحال.',
+    crisis_ex_m1: '⚡ فوري', crisis_ex_m2: '🆘 للأزمات',
+    profile_name: 'نور أحمد', profile_since: 'معنا منذ يناير ٢٠٢٦',
+    stat_entries: 'سجل', stat_exercises: 'تمرين', stat_circles: 'دوائر',
+    settings_title: 'الإعدادات',
+    set_reminders: 'تذكيرات يومية', set_privacy: 'الخصوصية والبيانات', set_language: 'اللغة',
+    set_crisis: 'خطة الأزمات الشخصية', set_share: 'مشاركة تقريري مع المرشد',
+    toast_recording: '🎤 جارٍ التسجيل...',
+    toast_write_first: 'اكتبي شيئاً أولاً 📝',
+    toast_saved: '✓ تم حفظ سجل اليوم',
+    toast_exercise_done: '✨ أحسنتِ! تمرين مكتمل',
+    toast_notifications: 'فتح إعدادات الإشعارات',
+    toast_privacy: 'فتح إعدادات الخصوصية',
+    toast_share_report: 'فتح مشاركة التقارير',
+    toast_calling_child: 'جارٍ الاتصال بخط نجدة الطفل...',
+    toast_calling_mental: 'جارٍ الاتصال بنجدة الأمراض النفسية...',
+    toast_chat_volunteer: 'فتح الدردشة مع متطوع...',
+    toast_lang_switched: 'تم التبديل إلى العربية',
+    ai_analysis: 'أكتشفت في كلماتك مشاعر إجهاد خفيف مع لمسة من الأمل. هذا التوازن صحي جداً. أنصحكِ اليوم بتمرين التوكل — مناسب تماماً لحالتك.',
+    // AI Chat
+    ai_talk_title: 'تحدثي مع نفسي AI 💬',
+    ai_talk_sub: 'رفيقتك الذكية جاهزة للاستماع',
+    ai_name: 'نفسي AI',
+    ai_status: 'متصلة الآن',
+    ai_input_ph: 'اكتبي لنفسي...',
+    chip_stressed: '😫 أنا متوترة',
+    chip_sad: '😢 حاسة بحزن',
+    chip_mood: '📊 حللي مزاجي',
+    chip_burnout: '🔥 هل عندي إجهاد؟',
+    chip_exercise: '🌿 أريد تمرين',
+    jp_title: 'هل تريدين التحدث عن مشاعرك؟',
+    jp_text: 'نفسي AI جاهزة تسمعك وتساعدك تفهمي مشاعرك أكثر.',
+    jp_yes: 'نعم، تحدثي معي 💬',
+    jp_no: 'ليس الآن',
+    ai_welcome: 'أهلاً يا نور 💚\n\nأنا نفسي، رفيقتك الذكية. معاكي هنا عشان أسمعك وأساعدك.\n\nاحكيلي إيش حاسة النهاردة؟',
+    ai_crisis_title: '❤️ أنا هنا معاكي',
+    ai_crisis_text: 'اللي بتحسي بيه مهم جداً. انتي مش لوحدك وفي ناس متخصصة ممكن تساعدك. تواصلي مع حد بتثقي فيه أو اتصلي بخط مساعدة.',
+    ai_crisis_sos: '🆘 تواصلي مع خط المساعدة',
+    ai_voice_listening: '🎤 جاري الاستماع...',
+  },
+  en: {
+    onboard_headline: 'Your safe space to express yourself',
+    onboard_sub: 'Your smart companion to track emotions, detect burnout early, and live in true mental balance.',
+    onboard_start: 'Start your journey',
+    onboard_login: 'Sign in',
+    greeting: 'Good morning 🌿',
+    user_name: 'Nour',
+    avatar_letter: 'N',
+    burnout_label: 'Burnout index this week',
+    burnout_status: '✓ Doing well',
+    quick_title: 'What do you need today?',
+    quick_journal: 'Log your day',
+    quick_exercises: 'Exercises',
+    quick_circles: 'My circle',
+    quick_help: 'Help',
+    mood_week_title: 'Your mood this week',
+    day_sun: 'Sun', day_mon: 'Mon', day_tue: 'Tue', day_wed: 'Wed', day_thu: 'Thu', day_fri: 'Fri', day_sat: 'Sat',
+    day_sun_full: 'Sun', day_mon_full: 'Mon', day_tue_full: 'Tue', day_wed_full: 'Wed', day_thu_full: 'Thu', day_fri_full: 'Fri', day_sat_full: 'Sat',
+    ai_insight_title: 'AI Insight',
+    insight_badge: 'This week\'s analysis',
+    insight_text: 'I noticed a pattern of midweek fatigue. Try the Tawakkul exercise today — results with people like you have been excellent.',
+    nav_home: 'Home', nav_journal: 'Journal', nav_exercises: 'Exercises', nav_circles: 'Circles', nav_profile: 'Profile',
+    mood_how: 'How are you feeling now?',
+    journal_label: 'Write your thoughts freely...',
+    journal_placeholder: 'What\'s on your mind today? There\'s no right or wrong here...',
+    ai_chip: 'AI Analysis',
+    tag_fatigue: 'Mild fatigue', tag_hope: 'Hope', tag_stress: 'Stress',
+    save_btn: 'Save entry ✓',
+    exercises_title: 'Wellness Exercises',
+    tab_all: 'All', tab_tawakkul: 'Tawakkul', tab_breathing: 'Breathing', tab_gratitude: 'Gratitude', tab_patience: 'Patience',
+    ex1_name: '4-7-8 Calm Breathing', ex1_desc: 'A scientifically-backed breathing technique that calms the nervous system in minutes. Inspired by dhikr practices.',
+    ex1_m1: '⏱ 5 min', ex1_m2: '⭐ Most effective', ex1_m3: '🌿 For anxiety',
+    ex2_name: 'Tawakkul Meditation', ex2_desc: 'Release anxiety through affirmations inspired by the Quran and authentic supplications.',
+    ex2_m1: '⏱ 8 min', ex2_m2: '🤲 Spiritual', ex2_m3: '💚 Recommended',
+    ex3_name: 'Gratitude Journal — Shukr', ex3_desc: 'Record three things you\'re grateful for today. A scientifically-proven technique to boost mood.',
+    ex3_m1: '⏱ 3 min', ex3_m2: '✍️ Writing', ex3_m3: '🌸 For fatigue',
+    ex4_name: 'Patience — Present Awareness', ex4_desc: 'Extend patience through mindfulness — culturally authentic and psychology-backed.',
+    ex4_m1: '⏱ 10 min', ex4_m2: '🧘 Meditation', ex4_m3: '💙 For burnout',
+    player_title: '4-7-8 Breathing',
+    breath_ready: 'Get ready', breath_start_msg: 'Press start to begin the breathing session',
+    breath_start_btn: 'Start exercise 🌿', breath_stop_btn: 'Stop',
+    breath_complete: 'Well done! Session completed ✨',
+    breath_inhale: 'Inhale', breath_hold: 'Hold', breath_exhale: 'Exhale',
+    breath_inhale_text: 'Breathe slowly through your nose... fill your lungs',
+    breath_hold_text: 'Hold gently... feel the calm',
+    breath_exhale_text: 'Exhale slowly through your mouth... release anxiety',
+    circles_title: 'Support Circles',
+    circles_desc: 'Anonymous circles for women with similar experiences. A safe, private, and moderated space.',
+    circle1_name: '💚 Mid-semester Students', circle1_desc: 'A circle for university students going through exam stress and future worries. Share, listen, heal.',
+    circle1_count: '+2 others', circle1_time: '5 min ago',
+    badge_active_now: 'Active now', badge_active: 'Active', badge_new: 'New',
+    circle2_name: '🌸 New Mothers', circle2_desc: 'For those suffering from motherhood burnout in silence. You are not alone.',
+    circle2_count: '+3 others', circle2_time: '1 hour ago',
+    circle3_name: '🌙 Night Owl Insomniacs', circle3_desc: 'For those with insomnia and night anxiety. A calm community for difficult hours.',
+    circle3_count: '+1 other', circle3_time: 'New',
+    chat_today: 'Today', chat_placeholder: 'Write your message...',
+    crisis_title: 'Get Help',
+    crisis_banner_title: '❤️ You are not alone',
+    crisis_banner_text: 'If you\'re going through a tough time, the first step is to talk. Someone is listening and cares about you right now.',
+    crisis_lines_title: 'Specialized support lines',
+    crisis_line1_name: 'Child & Woman Helpline', crisis_line1_num: '16000 · Available 24/7 · Free',
+    crisis_line2_name: 'Mental Health Helpline', crisis_line2_num: '08008880700 · Free · Confidential',
+    crisis_line3_name: 'Chat with a volunteer now', crisis_line3_num: 'Via Nafsy app · Fully confidential',
+    crisis_emergency_title: 'Emergency calming exercise',
+    crisis_ex_name: 'Crisis Breathing — 60 seconds', crisis_ex_desc: 'A quick technique to stop a panic attack instantly.',
+    crisis_ex_m1: '⚡ Instant', crisis_ex_m2: '🆘 For crises',
+    profile_name: 'Nour Ahmed', profile_since: 'With us since January 2026',
+    stat_entries: 'Entries', stat_exercises: 'Exercises', stat_circles: 'Circles',
+    settings_title: 'Settings',
+    set_reminders: 'Daily reminders', set_privacy: 'Privacy & data', set_language: 'Language',
+    set_crisis: 'Personal crisis plan', set_share: 'Share report with counselor',
+    toast_recording: '🎤 Recording...',
+    toast_write_first: 'Write something first 📝',
+    toast_saved: '✓ Today\'s entry saved',
+    toast_exercise_done: '✨ Well done! Exercise complete',
+    toast_notifications: 'Opening notification settings',
+    toast_privacy: 'Opening privacy settings',
+    toast_share_report: 'Opening report sharing',
+    toast_calling_child: 'Calling Child & Woman Helpline...',
+    toast_calling_mental: 'Calling Mental Health Helpline...',
+    toast_chat_volunteer: 'Opening volunteer chat...',
+    toast_lang_switched: 'Switched to English',
+    ai_analysis: 'I detected mild fatigue with a hint of hope in your words. This balance is very healthy. I recommend the Tawakkul exercise today — it\'s perfect for your state.',
+    // AI Chat
+    ai_talk_title: 'Talk to Nafsy AI 💬',
+    ai_talk_sub: 'Your smart companion is ready to listen',
+    ai_name: 'Nafsy AI',
+    ai_status: 'Online now',
+    ai_input_ph: 'Write to Nafsy...',
+    chip_stressed: '😫 I\'m stressed',
+    chip_sad: '😢 Feeling sad',
+    chip_mood: '📊 Analyze my mood',
+    chip_burnout: '🔥 Am I burning out?',
+    chip_exercise: '🌿 I want an exercise',
+    jp_title: 'Want to talk about your feelings?',
+    jp_text: 'Nafsy AI is ready to listen and help you understand your emotions better.',
+    jp_yes: 'Yes, talk to me 💬',
+    jp_no: 'Not now',
+    ai_welcome: 'Hi Nour 💚\n\nI\'m Nafsy, your smart companion. I\'m here to listen and support you.\n\nHow are you feeling today?',
+    ai_crisis_title: '❤️ I\'m here with you',
+    ai_crisis_text: 'What you\'re feeling matters deeply. You are not alone, and there are people who can help. Please reach out to someone you trust or call a helpline.',
+    ai_crisis_sos: '🆘 Contact helpline',
+    ai_voice_listening: '🎤 Listening...',
+  }
+};
+
+function t(key) {
+  return translations[currentLang][key] || key;
+}
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  const phone = document.querySelector('.phone');
+  const html = document.documentElement;
+
+  if (lang === 'en') {
+    phone.classList.add('ltr');
+    html.setAttribute('dir', 'ltr');
+    html.setAttribute('lang', 'en');
+  } else {
+    phone.classList.remove('ltr');
+    html.setAttribute('dir', 'rtl');
+    html.setAttribute('lang', 'ar');
+  }
+
+  // Update all text content
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (translations[lang][key]) {
+      el.placeholder = translations[lang][key];
+    }
+  });
+
+  // Update toggle UI
+  const sw = document.getElementById('lang-switch');
+  const arLabel = document.getElementById('lang-ar-label');
+  const enLabel = document.getElementById('lang-en-label');
+  if (sw && arLabel && enLabel) {
+    if (lang === 'en') {
+      sw.classList.add('en');
+      enLabel.classList.add('active-lang');
+      arLabel.classList.remove('active-lang');
+    } else {
+      sw.classList.remove('en');
+      arLabel.classList.add('active-lang');
+      enLabel.classList.remove('active-lang');
+    }
+  }
+}
+
+function toggleLanguage() {
+  const newLang = currentLang === 'ar' ? 'en' : 'ar';
+  applyLanguage(newLang);
+  showToast(t('toast_lang_switched'));
+}
+
+// ===================== NAVIGATION =====================
+let selectedMood = 3; // default mood
+
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  if (screen === 'home') {
+    loadProfile();
+  }
+  if (screen === 'chat') {
+    setTimeout(() => {
+      const cs = document.getElementById('chat-scroll');
+      cs.scrollTop = cs.scrollHeight;
+    }, 100);
+  }
+  if (screen === 'ai-chat') {
+    initAiChat();
+    setTimeout(() => {
+      const cs = document.getElementById('ai-chat-scroll');
+      if (cs) cs.scrollTop = cs.scrollHeight;
+    }, 100);
+  }
+}
+
+function selectMood(el, val) {
+  document.querySelectorAll('.mood-emoji-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMood = val;
+}
+
+function updateCharCount() {
+  const ta = document.getElementById('journal-text');
+  document.getElementById('char-count').textContent = ta.value.length + ' / 500';
+}
+
+let voiceActive = false;
+let voiceInterval = null;
+
+function toggleVoice() {
+  const btn = document.getElementById('voice-btn');
+  const ta = document.getElementById('journal-text');
+  voiceActive = !voiceActive;
+  btn.classList.toggle('recording', voiceActive);
+  if (voiceActive) {
+    showToast(t('toast_recording'));
+    let sampleTexts = currentLang === 'ar'
+      ? ['اليوم كنت تعبانة شوية من الدراسة', ' بس حاسة إن في أمل', ' محتاجة أرتاح بس مش عارفة']
+      : ['Today I was a bit tired from studying', ' but I feel there is hope', ' I need rest but don\'t know how'];
+    let i = 0;
+    voiceInterval = setInterval(() => {
+      if (i < sampleTexts.length) {
+        ta.value += sampleTexts[i++];
+        updateCharCount();
+      } else {
+        toggleVoice();
+        analyzeJournal();
+      }
+    }, 800);
+  } else {
+    clearInterval(voiceInterval);
+  }
+}
+
+function analyzeJournal() {
+  const ta = document.getElementById('journal-text');
+  if (ta.value.length < 10) return;
+  const resultCard = document.getElementById('ai-result');
+  const loading = document.getElementById('ai-loading');
+  const aiText = document.getElementById('ai-text');
+  const tags = document.getElementById('emotion-tags');
+
+  resultCard.style.display = 'block';
+  loading.style.display = 'flex';
+  aiText.style.display = 'none';
+  tags.style.display = 'none';
+
+  setTimeout(() => {
+    loading.style.display = 'none';
+    aiText.style.display = 'block';
+    tags.style.display = 'flex';
+    aiText.textContent = t('ai_analysis');
+  }, 2000);
+}
+
+function saveJournal() {
+  const ta = document.getElementById('journal-text');
+  
+  if (ta.value.length < 5) {
+    showToast(t('toast_write_first'));
+    return;
+  }
+  
+  // Update today's mood emoji on home screen
+  const moodEmojis = ['😢','😔','😐','🙂','😊'];
+  const moodColors = ['#F5E8E6','#F5E8E6','#F7F0E3','#EAF2ED','#EAF2ED'];
+  const todayDot = document.querySelectorAll('.mood-row .mood-day');
+  if (todayDot.length > 0) {
+    const lastDay = todayDot[todayDot.length - 1];
+    const dot = lastDay.querySelector('.mood-dot');
+    if (dot) {
+      dot.textContent = moodEmojis[selectedMood - 1];
+      dot.style.background = moodColors[selectedMood - 1];
+    }
+  }
+
+  fetch('/api/journal', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId: 'user_1', text: ta.value, mood: selectedMood })
+  }).then(r => r.json()).then(data => {
+    if (data.burnoutScore !== undefined) updateBurnoutUI(data.burnoutScore, data.insight);
+  }).catch(e => console.error(e));
+
+  showToast(t('toast_saved'));
+  setTimeout(() => {
+    document.getElementById('journal-prompt').classList.add('show');
+  }, 1500);
+}
+
+// Breathing exercise
+let breathInterval = null;
+let breathRunning = false;
+let breathPhaseIdx = 0;
+let breathCountdown = 0;
+
+function getBreathPhases() {
+  return [
+    { phase: t('breath_inhale'), duration: 4, text: t('breath_inhale_text') },
+    { phase: t('breath_hold'), duration: 7, text: t('breath_hold_text') },
+    { phase: t('breath_exhale'), duration: 8, text: t('breath_exhale_text') },
+  ];
+}
+
+function startBreathing() {
+  breathRunning = true;
+  document.getElementById('breath-start-btn').style.display = 'none';
+  document.getElementById('breath-stop-btn').style.display = 'block';
+  breathPhaseIdx = 0;
+  runBreathPhase();
+}
+
+function runBreathPhase() {
+  if (!breathRunning) return;
+  const phases = getBreathPhases();
+  const phase = phases[breathPhaseIdx % 3];
+  breathCountdown = phase.duration;
+  document.getElementById('breath-phase').textContent = phase.phase;
+  document.getElementById('breath-text').textContent = phase.text;
+  document.getElementById('breath-count').textContent = breathCountdown;
+
+  const outer = document.getElementById('breath-outer');
+  if (breathPhaseIdx % 3 === 0) outer.classList.add('expand');
+  else outer.classList.remove('expand');
+
+  ['bdot1','bdot2','bdot3'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('active', i === breathPhaseIdx % 3);
+  });
+
+  breathInterval = setInterval(() => {
+    breathCountdown--;
+    document.getElementById('breath-count').textContent = breathCountdown;
+    if (breathCountdown <= 0) {
+      clearInterval(breathInterval);
+      breathPhaseIdx++;
+      if (breathPhaseIdx < 12) {
+        runBreathPhase();
+      } else {
+        stopBreathing(true);
+      }
+    }
+  }, 1000);
+}
+
+function stopBreathing(completed) {
+  breathRunning = false;
+  clearInterval(breathInterval);
+  document.getElementById('breath-start-btn').style.display = 'block';
+  document.getElementById('breath-stop-btn').style.display = 'none';
+  document.getElementById('breath-phase').textContent = t('breath_ready');
+  document.getElementById('breath-count').textContent = '—';
+  document.getElementById('breath-text').textContent = completed ? t('breath_complete') : t('breath_start_msg');
+  document.getElementById('breath-outer').classList.remove('expand');
+  if (completed) showToast(t('toast_exercise_done'));
+}
+
+// Chat
+function sendChatMsg() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const scroll = document.getElementById('chat-scroll');
+  const wrap = document.createElement('div');
+  wrap.className = 'chat-bubble-wrap own';
+  const spacer = document.createElement('div');
+  spacer.style.width = '28px';
+  const inner = document.createElement('div');
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble own';
+  bubble.textContent = msg;
+  const time = document.createElement('div');
+  time.className = 'chat-time';
+  time.style.textAlign = currentLang === 'ar' ? 'left' : 'right';
+  const now = new Date();
+  time.textContent = now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0');
+  inner.appendChild(bubble);
+  inner.appendChild(time);
+  wrap.appendChild(spacer);
+  wrap.appendChild(inner);
+  scroll.appendChild(wrap);
+  input.value = '';
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+// Toast
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ===================== NAFSY AI COMPANION ENGINE =====================
+// BACKEND_URL already declared above
+
+function playTTS(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+  utterance.rate = 1.0;
+  utterance.pitch = 1.0;
+  window.speechSynthesis.speak(utterance);
+}
+
+function loadProfile() {
+  fetch('/api/profile/user_1')
+    .then(r => r.json())
+    .then(data => {
+      updateBurnoutUI(data.burnoutScore, data.insight);
+    }).catch(e => console.log('Backend not running', e));
+}
+
+// Initial fetch on page load
+loadProfile();
+
+function updateBurnoutUI(score, insight) {
+  const scoreEl = document.getElementById('home-burnout-score');
+  const barEl = document.getElementById('home-burnout-bar');
+  const statusEl = document.getElementById('home-burnout-status');
+  const insightEl = document.getElementById('home-insight-text');
+
+  if (scoreEl && score !== undefined) scoreEl.textContent = score;
+  if (barEl && score !== undefined) barEl.style.width = score + '%';
+  if (statusEl && score !== undefined) {
+    if (score > 65) {
+      statusEl.textContent = currentLang === 'ar' ? '⚠️ إجهاد مرتفع' : '⚠️ High burnout';
+      statusEl.style.background = 'rgba(196,132,122,0.25)';
+      statusEl.style.color = '#C4847A';
+    } else if (score > 40) {
+      statusEl.textContent = currentLang === 'ar' ? '⚡ متوسط' : '⚡ Moderate';
+      statusEl.style.background = 'rgba(201,169,110,0.25)';
+      statusEl.style.color = '#C9A96E';
+    } else {
+      statusEl.textContent = currentLang === 'ar' ? '✓ بحالة جيدة' : '✓ Doing well';
+      statusEl.style.background = 'rgba(124,158,138,0.25)';
+      statusEl.style.color = '#9FE1CB';
+    }
+  }
+  if (insightEl && insight) insightEl.textContent = insight;
+}
+
+// ===================== AI CHAT UI FUNCTIONS =====================
+let aiChatInitialized = false;
+
+function initAiChat() {
+  if (aiChatInitialized) return;
+  aiChatInitialized = true;
+  const scroll = document.getElementById('ai-chat-scroll');
+  const welcomeText = t('ai_welcome').replace(/\\n/g, '\n');
+  addAiMessage(welcomeText);
+  playTTS(welcomeText);
+}
+
+function addAiMessage(text) {
+  const scroll = document.getElementById('ai-chat-scroll');
+  const wrap = document.createElement('div');
+  wrap.className = 'ai-msg-wrap';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'ai-msg-avatar';
+  avatar.textContent = '🧠';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'ai-msg-bubble';
+  bubble.innerHTML = text.replace(/\n/g, '<br>');
+
+  wrap.appendChild(avatar);
+  wrap.appendChild(bubble);
+  scroll.appendChild(wrap);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function addUserAiMessage(text) {
+  const scroll = document.getElementById('ai-chat-scroll');
+  const wrap = document.createElement('div');
+  wrap.className = 'user-ai-msg-wrap';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'user-ai-bubble';
+  bubble.textContent = text;
+
+  wrap.appendChild(bubble);
+  scroll.appendChild(wrap);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function showAiTyping() {
+  const scroll = document.getElementById('ai-chat-scroll');
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'ai-typing-indicator';
+
+  const avatar = document.createElement('div');
+  avatar.className = 'ai-msg-avatar';
+  avatar.textContent = '🧠';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'ai-typing-bubble';
+  bubble.innerHTML = '<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>';
+
+  typing.appendChild(avatar);
+  typing.appendChild(bubble);
+  scroll.appendChild(typing);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function hideAiTyping() {
+  const el = document.getElementById('ai-typing-indicator');
+  if (el) el.remove();
+}
+
+function addActionCard(exercise) {
+  if (!exercise) return;
+  const scroll = document.getElementById('ai-chat-scroll');
+  const card = document.createElement('div');
+  card.className = 'ai-action-card';
+  card.onclick = () => navigate(exercise.screen);
+
+  const name = currentLang === 'ar' ? exercise.name_ar : exercise.name_en;
+  const desc = currentLang === 'ar' ? 'اضغطي هنا لتبدأي التمرين' : 'Tap here to start the exercise';
+
+  card.innerHTML = `
+    <div class="ai-action-header">
+      <div class="ai-action-icon">${exercise.icon}</div>
+      <div class="ai-action-title">${name}</div>
+    </div>
+    <div class="ai-action-desc">${desc}</div>
+  `;
+  scroll.appendChild(card);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function addCrisisBanner() {
+  const scroll = document.getElementById('ai-chat-scroll');
+  const banner = document.createElement('div');
+  banner.className = 'crisis-mode-banner';
+  banner.innerHTML = `
+    <div class="crisis-mode-title">${t('ai_crisis_title')}</div>
+    <div class="crisis-mode-text">${t('ai_crisis_text')}</div>
+    <button class="crisis-sos-btn" onclick="navigate('crisis')">${t('ai_crisis_sos')}</button>
+  `;
+  scroll.appendChild(banner);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+function addBurnoutCard(score) {
+  if (score < 40) return; // Only show if moderate/high
+  let level = score >= 65 ? 'HIGH' : 'MODERATE';
+  let color = score >= 65 ? '#C4847A' : '#D4A843';
+  const scroll = document.getElementById('ai-chat-scroll');
+  const card = document.createElement('div');
+  card.className = 'ai-action-card';
+  const label = currentLang === 'ar'
+    ? `مؤشر الإجهاد: ${level} (${score}%)`
+    : `Burnout Index: ${level} (${score}%)`;
+  card.innerHTML = `
+    <div class="ai-action-header">
+      <div class="ai-action-icon" style="background:${color}20;color:${color}">📊</div>
+      <div class="ai-action-title" style="color:${color}">${label}</div>
+    </div>
+    <div style="background:var(--sand-light);border-radius:6px;height:6px;margin-top:8px;overflow:hidden;">
+      <div style="height:100%;width:${score}%;background:${color};border-radius:6px;transition:width 0.8s ease;"></div>
+    </div>
+  `;
+  scroll.appendChild(card);
+  scroll.scrollTop = scroll.scrollHeight;
+}
+
+async function sendAiMessage() {
+  const input = document.getElementById('ai-text-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  addUserAiMessage(msg);
+  showAiTyping();
+
+  const sugg = document.getElementById('ai-suggestions');
+  if (sugg) sugg.style.display = 'none';
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: 'user_1', message: msg })
+    });
+    
+    hideAiTyping();
+    if (!res.ok) throw new Error('Network response was not ok');
+    
+    const data = await res.json();
+    
+    if (data.crisis) {
+      addAiMessage(data.text);
+      playTTS(data.text);
+      setTimeout(() => addCrisisBanner(), 500);
+      return;
+    }
+
+    addAiMessage(data.text);
+    playTTS(data.text);
+    
+    if (data.burnout) {
+      setTimeout(() => addBurnoutCard(data.burnout), 400);
+    }
+    if (data.exercise) {
+      setTimeout(() => addActionCard(data.exercise), 800);
+    }
+  } catch (err) {
+    console.warn('Backend API error:', err);
+    hideAiTyping();
+    const fallbackMsg = currentLang === 'ar' ? 'عذراً، الخادم غير متصل. يرجى المتابعة لاحقاً.' : 'Server offline. Please try later.';
+    addAiMessage(fallbackMsg);
+  }
+}
+
+
+
+function sendAiChip(el) {
+  const text = el.textContent;
+  document.getElementById('ai-text-input').value = text;
+  sendAiMessage();
+}
+
+// ===================== VOICE INPUT =====================
+let aiVoiceActive = false;
+let recognition = null;
+
+function toggleAiVoice() {
+  const btn = document.getElementById('ai-voice-btn');
+
+  if (aiVoiceActive) {
+    aiVoiceActive = false;
+    btn.classList.remove('recording');
+    if (recognition) recognition.stop();
+    return;
+  }
+
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast(currentLang === 'ar' ? 'المتصفح لا يدعم الصوت' : 'Browser does not support voice');
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = currentLang === 'ar' ? 'ar-EG' : 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    aiVoiceActive = true;
+    btn.classList.add('recording');
+    showToast(t('ai_voice_listening'));
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('ai-text-input').value = transcript;
+    sendAiMessage();
+  };
+
+  recognition.onerror = () => {
+    aiVoiceActive = false;
+    btn.classList.remove('recording');
+  };
+
+  recognition.onend = () => {
+    aiVoiceActive = false;
+    btn.classList.remove('recording');
+  };
+
+  recognition.start();
+}
+
+// ===================== JOURNAL PROMPT =====================
+function closeJournalPrompt() {
+  document.getElementById('journal-prompt').classList.remove('show');
+}
+</script>
+</body>
+</html>
