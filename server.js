@@ -181,6 +181,10 @@ Rules:
   res.json({ text: reply, exercise, burnout: user.burnoutScore });
 });
 
-app.listen(port, () => {
-  console.log(`Backend running at http://localhost:${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Backend running at http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
